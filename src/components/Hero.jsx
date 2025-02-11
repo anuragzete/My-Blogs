@@ -1,28 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { ArrowDown } from "lucide-react";
-import TechReadingSVG from "../assets/tech-reading.svg"; // Add a relevant SVG graphic
+import TechReadingSVG from "../assets/tech-reading.svg";
 
 export default function Hero() {
     const greetings = ["Hey there!", "Glad to see you!", "Welcome aboard!", "Happy to have you here!"];
     const [greeting, setGreeting] = useState("");
-    const [index, setIndex] = useState(0);
-    const [showCursor, setShowCursor] = useState(true);
+    const [greetingIndex, setGreetingIndex] = useState(0);
+    const [charIndex, setCharIndex] = useState(0);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
-        if (index < greetings.length) {
-            const typingInterval = setTimeout(() => {
-                setGreeting(greetings[index]);
-                setIndex(index + 1);
-            }, 2500);
+        const currentGreeting = greetings[greetingIndex];
 
-            return () => clearTimeout(typingInterval);
-        } else {
-            setTimeout(() => {
-                setGreeting("Hello!");
-                setIndex(0);
-            }, 10000);
+        if (!isDeleting && charIndex < currentGreeting.length) {
+            // Typing effect
+            const typingTimeout = setTimeout(() => {
+                setGreeting((prev) => prev + currentGreeting[charIndex]);
+                setCharIndex(charIndex + 1);
+            }, 100);
+
+            return () => clearTimeout(typingTimeout);
+        } else if (isDeleting && charIndex > 0) {
+            // Deleting effect
+            const deletingTimeout = setTimeout(() => {
+                setGreeting((prev) => prev.slice(0, -1));
+                setCharIndex(charIndex - 1);
+            }, 50);
+
+            return () => clearTimeout(deletingTimeout);
+        } else if (!isDeleting && charIndex === currentGreeting.length) {
+            // Pause before deleting
+            setTimeout(() => setIsDeleting(true), 2000);
+        } else if (isDeleting && charIndex === 0) {
+            // Move to next greeting
+            setIsDeleting(false);
+            setGreetingIndex((prevIndex) => (prevIndex + 1) % greetings.length);
         }
-    }, [index]);
+    }, [charIndex, isDeleting, greetingIndex, greetings]);
 
     return (
         <section id="hero" className="min-h-screen flex flex-col items-center justify-center pt-16 text-center space-y-8">
@@ -30,7 +44,7 @@ export default function Hero() {
                 <h1 className="text-5xl md:text-7xl font-bold">
                     <span className="text-blue-600 dark:text-blue-400">
                         {greeting}
-                        {showCursor && <span className="animate-blink">|</span>}
+                        <span className="animate-blink">|</span>
                     </span>
                 </h1>
                 <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300">
