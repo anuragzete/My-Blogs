@@ -15,6 +15,7 @@ import TermsAndConditions from "./components/TermsAndConditions.jsx";
 export default function App() {
     const { theme } = useTheme();
     const [loading, setLoading] = useState(true);
+    const [activeSection, setActiveSection] = useState('home');
 
     useEffect(() => {
         // Wait for the page to load (including images & scripts)
@@ -31,6 +32,13 @@ export default function App() {
         return () => window.removeEventListener('load', handleLoad);
     }, []);
 
+    useEffect(() => {
+        // Set dynamic page title based on active section
+        document.title = activeSection === "home"
+            ? "Blogs | Home"
+            : `Blogs | ${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} `;
+    }, [activeSection]);
+
     return (
         <Router>
             {loading ? (
@@ -39,7 +47,7 @@ export default function App() {
                 <div className={`min-h-screen flex flex-col transition-all duration-700 ${
                     theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
                 }`}>
-                    <Navbar />
+                    <Navbar setActiveSection={setActiveSection} />
                     <main className="container flex-grow mx-auto px-4 pt-24">
                         <Routes>
                             <Route path="/" element={<Home />} />

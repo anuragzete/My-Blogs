@@ -10,7 +10,7 @@ const NEON_COLORS = [
     'from-yellow-500 to-orange-500'
 ];
 
-export default function Navbar() {
+export default function Navbar({setActiveSection}) {
     const { theme, toggleTheme } = useTheme();
     const [neonIndex, setNeonIndex] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,6 +21,10 @@ export default function Navbar() {
         }, 5000);
         return () => clearInterval(interval);
     }, []);
+
+    const handleClick = () => {
+        setActiveSection('default');
+    }
 
     return (
         <nav
@@ -50,9 +54,9 @@ export default function Navbar() {
 
                 {/* Desktop Navigation */}
                 <div className="hidden md:flex items-center space-x-4">
-                    <NavItem to="/" label="Home" Icon={Home} theme={theme} />
-                    <NavItem to="/about" label="About" Icon={Info} theme={theme} />
-                    <NavItem to="/profile" label="Profile" Icon={User} theme={theme} />
+                    <NavItem to="/" label="Home" Icon={Home} theme={theme} onClick={handleClick} neonIndex={neonIndex} />
+                    <NavItem to="/about" label="About" Icon={Info} theme={theme} onClick={handleClick} neonIndex={neonIndex} />
+                    <NavItem to="/profile" label="Profile" Icon={User} theme={theme} onClick={handleClick} neonIndex={neonIndex} />
 
                     {/* Theme Toggle */}
                     <button
@@ -71,9 +75,9 @@ export default function Navbar() {
             {/* Mobile Navigation */}
             {isMenuOpen && (
                 <div className="md:hidden px-4 pb-4 flex flex-col space-y-3">
-                    <NavItem to="/" label="Home" Icon={Home} theme={theme} onClick={() => setIsMenuOpen(false)} />
-                    <NavItem to="/about" label="About" Icon={Info} theme={theme} onClick={() => setIsMenuOpen(false)} />
-                    <NavItem to="/profile" label="Profile" Icon={User} theme={theme} onClick={() => setIsMenuOpen(false)} />
+                    <NavItem to="/" label="Home" Icon={Home} theme={theme} onClick={() => setIsMenuOpen(false)} neonIndex={neonIndex} />
+                    <NavItem to="/about" label="About" Icon={Info} theme={theme} onClick={() => setIsMenuOpen(false)} neonIndex={neonIndex} />
+                    <NavItem to="/profile" label="Profile" Icon={User} theme={theme} onClick={() => setIsMenuOpen(false)} neonIndex={neonIndex} />
 
                     {/* Theme Toggle (Mobile) */}
                     <button
@@ -97,13 +101,17 @@ export default function Navbar() {
 }
 
 // Reusable NavItem Component
-const NavItem = ({ to, label, Icon, theme, onClick }) => (
+const NavItem = ({ to, label, Icon, theme, onClick, neonIndex }) => (
     <NavLink
         to={to}
         onClick={onClick}
         className={({ isActive }) =>
             `flex items-center space-x-1 px-4 py-2 rounded-lg transition-all duration-300 ${
-                isActive ? 'text-indigo-500 font-bold' : theme === 'dark' ? 'text-white' : 'text-gray-700'
+                theme === 'dark'
+                    ? `hover:bg-gradient-to-r ${NEON_COLORS[neonIndex]} text-white`
+                    : 'hover:bg-gray-100 text-gray-600'
+            } ${
+                isActive ? 'text-indigo-500 font-bold' : theme === 'dark' ? 'text-white' : 'text-gray-600'
             }`
         }
     >
