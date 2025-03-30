@@ -11,6 +11,7 @@ import UserProfile from "./components/UserProfile.jsx";
 import Blog from "./components/Blog.jsx";
 import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
 import TermsAndConditions from "./components/TermsAndConditions.jsx";
+import AuthPage from "./components/AuthPage.jsx";
 
 export default function App() {
     const { theme } = useTheme();
@@ -44,24 +45,36 @@ export default function App() {
             {loading ? (
                 <LoadingScreen />
             ) : (
-                <div className={`min-h-screen flex flex-col transition-all duration-700 ${
-                    theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
-                }`}>
-                    <Navbar setActiveSection={setActiveSection} />
-                    <main className="container flex-grow mx-auto px-4 pt-24">
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/about" element={<About />} />
-                            <Route path="/profile" element={<UserProfile />} />
-                            <Route path="/blog" element={<Blog />} />
-                            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-                            <Route path="/contact" element={<Contact />} />
-                            <Route path="/blog" element={<Blog />} />
-                        </Routes>
-                    </main>
-                    <Footer />
-                </div>
+                <Routes>
+                    {/* Auth Page without Navbar & Footer */}
+                    <Route path="/auth" element={<AuthPage />} />
+
+                    {/* All Other Pages with Navbar & Footer */}
+                    <Route
+                        path="/*"
+                        element={
+                            <div
+                                className={`min-h-screen flex flex-col transition-all duration-700 ${
+                                    theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"
+                                }`}
+                            >
+                                <Navbar setActiveSection={setActiveSection} />
+                                <main className="container flex-grow mx-auto px-4 pt-24">
+                                    <Routes>
+                                        <Route path="/" element={<Home />} />
+                                        <Route path="/about" element={<About />} />
+                                        <Route path="/profile" element={<UserProfile />} />
+                                        <Route path="/blog" element={<Blog />} />
+                                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                                        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                                        <Route path="/contact" element={<Contact />} />
+                                    </Routes>
+                                </main>
+                                <Footer />
+                            </div>
+                        }
+                    />
+                </Routes>
             )}
         </Router>
     );

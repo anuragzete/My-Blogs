@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Pencil, Heart, Bookmark, Trash2 } from "lucide-react";
+import { Pencil, Heart, Bookmark, Trash2, LogOut } from "lucide-react";
 
 const sampleUser = {
     username: "Anurag Zete",
@@ -59,6 +59,11 @@ export default function UserProfile() {
             ...prevUser,
             wishlist: prevUser.wishlist.filter(item => item !== blog)
         }));
+    };
+
+    const handleLogout = () => {
+        console.log("User logged out");
+        // Add actual logout logic here
     };
 
     return (
@@ -154,6 +159,12 @@ export default function UserProfile() {
                     )}
                 </section>
             )}
+
+            <div className="mt-6 flex justify-center">
+                <button onClick={handleLogout} className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600">
+                    <LogOut size={18} /> Logout
+                </button>
+            </div>
         </section>
     );
 }
